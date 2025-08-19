@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Calendar</title>
+    <script src="daypilot.min.js"></script>
+</head>
+<body>
+    <h1>DayPilot Debug Test</h1>
+    <div id="calendar-test"></div>
+    
+    <script>
+        console.log('Testing DayPilot availability...');
+        console.log('DayPilot object:', typeof DayPilot);
+        
+        if (typeof DayPilot !== 'undefined') {
+            console.log('DayPilot.Month:', typeof DayPilot.Month);
+            console.log('DayPilot.Date:', typeof DayPilot.Date);
+            
+            try {
+                const calendar = new DayPilot.Month("calendar-test", {
+                    startDate: new DayPilot.Date().firstDayOfMonth()
+                });
+                
+                calendar.events.list = [
+                    {
+                        id: 1,
+                        text: "Test Meeting",
+                        start: new DayPilot.Date().addDays(1),
+                        end: new DayPilot.Date().addDays(1).addHours(1)
+                    }
+                ];
+                
+                calendar.init();
+                console.log('Calendar initialized successfully');
+                
+            } catch (error) {
+                console.error('Error initializing calendar:', error);
+            }
+        } else {
+            console.error('DayPilot not available');
+        }
+    </script>
+</body>
+</html>

@@ -4,8 +4,538 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Schedule Rehab - Support Group Calendar</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗓️</text></svg>">
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Material Design Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- DayPilot CSS -->
+    <style>
+        /* DayPilot Calendar Styling */
+        .daypilot-calendar {
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            overflow: hidden;
+            background: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .daypilot-calendar .calendar_default_main {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .daypilot-calendar .calendar_default_event {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-weight: 500;
+            padding: 4px 8px;
+            margin: 2px;
+        }
+        
+        .daypilot-calendar .calendar_default_event_inner {
+            color: white;
+            font-size: 12px;
+        }
+        
+        .daypilot-calendar .calendar_default_event.virtual {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .daypilot-calendar .calendar_default_event.aa {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        .daypilot-calendar .calendar_default_event.na {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+        
+        .daypilot-calendar .calendar_default_event.recovery-dharma {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        }
+        
+        .daypilot-calendar .calendar_default_header_cell {
+            background: #f8fafc;
+            color: #4a5568;
+            font-weight: 600;
+            text-align: center;
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .daypilot-calendar .calendar_default_cell {
+            border: 1px solid #f1f5f9;
+            min-height: 120px;
+        }
+        
+        .daypilot-calendar .calendar_default_cell.calendar_default_cell_business {
+            background: #ffffff;
+        }
+        
+        .daypilot-calendar .calendar_default_cell_date {
+            color: #4a5568;
+            font-weight: 600;
+            padding: 8px;
+            font-size: 14px;
+        }
+        
+        .daypilot-calendar .calendar_default_cell.today {
+            background: #f0fff4;
+            border: 2px solid #10b981;
+        }
+        
+        .calendar-legend {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: #4a5568;
+        }
+        
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+        
+        .legend-color.aa { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .legend-color.na { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .legend-color.recovery-dharma { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); }
+        .legend-color.virtual { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .legend-color.other { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+
+        /* Custom Calendar Styles */
+        .calendar-section {
+            background: white !important;
+            padding: 3rem 0 !important;
+        }
+        
+        .calendar-section * {
+            background-image: none !important;
+        }
+        
+        .custom-calendar-container {
+            margin: 2rem 0;
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+        }
+
+        .app-container {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 20px;
+            min-height: 600px;
+        }
+
+        .left-panel {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .left-panel .header {
+            margin-bottom: 30px;
+            background: white !important;
+            background-image: none !important;
+        }
+
+        .greeting {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: #718096;
+            font-size: 14px;
+        }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px 50px 15px 20px;
+            border: 2px solid #f1f5f9;
+            border-radius: 15px;
+            font-size: 14px;
+            background: #f8fafc;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #a0aec0;
+        }
+
+        .meeting-types {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .type-card {
+            text-align: center;
+            padding: 15px 10px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .type-card.recovery-dharma { background: #fef3c7; color: #92400e; border: 2px solid #fbbf24; }
+        .type-card.aa { background: #dbeafe; color: #1e40af; border: 2px solid #3b82f6; }
+        .type-card.na { background: #d1fae5; color: #065f46; border: 2px solid #10b981; }
+        .type-card.celebrate-recovery { background: #e9d5ff; color: #6b21a8; border: 2px solid #8b5cf6; }
+        .type-card.smart-recovery { background: #fee2e2; color: #991b1b; border: 2px solid #ef4444; }
+
+        .type-card.active {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .type-card.recovery-dharma.active { background: #fbbf24; color: white; }
+        .type-card.aa.active { background: #3b82f6; color: white; }
+        .type-card.na.active { background: #10b981; color: white; }
+        .type-card.celebrate-recovery.active { background: #8b5cf6; color: white; }
+        .type-card.smart-recovery.active { background: #ef4444; color: white; }
+
+        .type-icon {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .type-name {
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .today-section {
+            flex: 1;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .see-all {
+            color: #667eea;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .meeting-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .meeting-card {
+            padding: 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .meeting-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .meeting-card.recovery-dharma { background: #fef3c7; color: #92400e; border: 1px solid #fbbf24; }
+        .meeting-card.aa { background: #dbeafe; color: #1e40af; border: 1px solid #3b82f6; }
+        .meeting-card.na { background: #d1fae5; color: #065f46; border: 1px solid #10b981; }
+        .meeting-card.celebrate-recovery { background: #e9d5ff; color: #6b21a8; border: 1px solid #8b5cf6; }
+        .meeting-card.smart-recovery { background: #fee2e2; color: #991b1b; border: 1px solid #ef4444; }
+
+        .meeting-time {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .meeting-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .meeting-description {
+            font-size: 13px;
+            opacity: 0.9;
+            line-height: 1.4;
+        }
+
+        .right-panel {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .calendar-nav {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-button {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 10px;
+            background: #f8fafc;
+            color: #4a5568;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .nav-button:hover {
+            background: #e2e8f0;
+        }
+
+        .add-task-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .add-task-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .week-header {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .day-header {
+            text-align: center;
+            padding: 10px;
+            font-size: 12px;
+            color: #a0aec0;
+            font-weight: 500;
+        }
+
+        .day-number {
+            display: block;
+            font-size: 16px;
+            color: #2d3748;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+
+        .day-header.today .day-number {
+            color: #667eea;
+        }
+
+        .calendar-content {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 60px;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .timeline-time {
+            position: absolute;
+            left: -50px;
+            top: 15px;
+            font-size: 12px;
+            color: #718096;
+            font-weight: 500;
+            text-align: right;
+            width: 40px;
+        }
+
+        .timeline-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-left: 4px solid #e2e8f0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .timeline-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .timeline-card.recovery-dharma { border-left-color: #fbbf24; }
+        .timeline-card.aa { border-left-color: #3b82f6; }
+        .timeline-card.na { border-left-color: #10b981; }
+        .timeline-card.celebrate-recovery { border-left-color: #8b5cf6; }
+        .timeline-card.smart-recovery { border-left-color: #ef4444; }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+
+        .card-description {
+            font-size: 14px;
+            color: #718096;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .card-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 12px;
+            color: #a0aec0;
+        }
+
+        .card-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .filter-chips {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-chip {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .filter-chip.active {
+            border-color: #667eea;
+        }
+
+        .filter-chip.all { background: #f8fafc; color: #4a5568; }
+        .filter-chip.recovery-dharma { background: #fef3c7; color: #92400e; }
+        .filter-chip.aa { background: #dbeafe; color: #1e40af; }
+        .filter-chip.na { background: #d1fae5; color: #065f46; }
+        .filter-chip.celebrate-recovery { background: #e9d5ff; color: #6b21a8; }
+        .filter-chip.smart-recovery { background: #fee2e2; color: #991b1b; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .app-container {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .left-panel, .right-panel {
+                padding: 20px;
+            }
+            
+            .meeting-types {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .filter-chips {
+                gap: 8px;
+            }
+            
+            .filter-chip {
+                font-size: 11px;
+                padding: 6px 12px;
+            }
+            
+            .calendar-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+            
+            .add-task-btn {
+                justify-content: center;
+            }
+        }
+    </style>
 </head>
 <body>
     <header class="header">
@@ -32,31 +562,93 @@
 
         <section id="calendar" class="calendar-section">
             <div class="container">
-                <h3>Meeting Schedule</h3>
-                <div class="calendar-controls">
-                    <button id="prevMonth" class="btn btn-secondary">← Previous</button>
-                    <h4 id="currentMonth"></h4>
-                    <button id="nextMonth" class="btn btn-secondary">Next →</button>
-                </div>
-                <div id="calendar" class="calendar-grid"></div>
+                <h3 style="text-align: center; margin-bottom: 2rem;">Meeting Schedule</h3>
                 
-                <div class="meeting-details" id="meetingDetails">
-                    <h4>Today's Meetings</h4>
-                    <div id="todaysMeetings" class="meetings-list">
-                        <div class="meeting-item">
-                            <div class="meeting-time">7:00 PM</div>
-                            <div class="meeting-info">
-                                <h5>AA Big Book Study</h5>
-                                <p>Community Center - 123 Main St</p>
-                                <span class="meeting-type">In-Person</span>
+                <!-- Custom Calendar Interface -->
+                <div class="custom-calendar-container">
+                    <div class="app-container">
+                        <!-- Left Panel -->
+                        <div class="left-panel">
+                            <div class="header">
+                                <div class="greeting">Good Morning, Recovery Seeker!</div>
+                                <div class="title">You have <span id="meeting-count">12 meetings</span></div>
+                                <div class="subtitle">this week 📅</div>
+                            </div>
+
+                            <div class="search-box">
+                                <input type="text" class="search-input" placeholder="Search meetings..." id="search-input">
+                                <span class="material-icons search-icon">search</span>
+                            </div>
+
+                            <div class="meeting-types">
+                                <div class="type-card recovery-dharma active" data-type="recovery-dharma">
+                                    <div class="type-icon">🧘</div>
+                                    <div class="type-name">Recovery Dharma</div>
+                                </div>
+                                <div class="type-card aa" data-type="aa">
+                                    <div class="type-icon">🤝</div>
+                                    <div class="type-name">AA</div>
+                                </div>
+                                <div class="type-card na" data-type="na">
+                                    <div class="type-icon">💪</div>
+                                    <div class="type-name">NA</div>
+                                </div>
+                                <div class="type-card celebrate-recovery" data-type="celebrate-recovery">
+                                    <div class="type-icon">✨</div>
+                                    <div class="type-name">Celebrate Recovery</div>
+                                </div>
+                                <div class="type-card smart-recovery" data-type="smart-recovery">
+                                    <div class="type-icon">🧠</div>
+                                    <div class="type-name">SMART Recovery</div>
+                                </div>
+                            </div>
+
+                            <div class="today-section">
+                                <div class="section-header">
+                                    <div class="section-title">Today's Meetings</div>
+                                    <div class="see-all">See All</div>
+                                </div>
+                                
+                                <div class="meeting-cards" id="today-meetings">
+                                    <!-- Today's meetings will be populated here -->
+                                </div>
                             </div>
                         </div>
-                        <div class="meeting-item">
-                            <div class="meeting-time">8:00 PM</div>
-                            <div class="meeting-info">
-                                <h5>NA Support Group</h5>
-                                <p>Virtual Meeting - Zoom</p>
-                                <span class="meeting-type virtual">Virtual</span>
+
+                        <!-- Right Panel - Calendar -->
+                        <div class="right-panel">
+                            <div class="calendar-header">
+                                <div class="calendar-nav">
+                                    <button class="nav-button" id="prev-week">
+                                        <span class="material-icons">chevron_left</span>
+                                    </button>
+                                    <button class="nav-button" id="next-week">
+                                        <span class="material-icons">chevron_right</span>
+                                    </button>
+                                </div>
+                                <button class="add-task-btn">
+                                    <span class="material-icons">add</span>
+                                    Add Meeting
+                                </button>
+                            </div>
+
+                            <div class="filter-chips">
+                                <div class="filter-chip all active" data-filter="all">All Meetings</div>
+                                <div class="filter-chip recovery-dharma" data-filter="recovery-dharma">Recovery Dharma</div>
+                                <div class="filter-chip aa" data-filter="aa">AA</div>
+                                <div class="filter-chip na" data-filter="na">NA</div>
+                                <div class="filter-chip celebrate-recovery" data-filter="celebrate-recovery">Celebrate Recovery</div>
+                                <div class="filter-chip smart-recovery" data-filter="smart-recovery">SMART Recovery</div>
+                            </div>
+
+                            <div class="week-header" id="week-header">
+                                <!-- Week days will be populated here -->
+                            </div>
+
+                            <div class="calendar-content">
+                                <div class="timeline" id="timeline">
+                                    <!-- Timeline meetings will be populated here -->
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -74,8 +666,8 @@
                     </div>
                     <div class="features">
                         <div class="feature">
-                            <h4>🗓️ Comprehensive Calendar</h4>
-                            <p>View all available meetings in an easy-to-use calendar format</p>
+                            <h4>🗓️ Professional Calendar</h4>
+                            <p>Advanced calendar interface powered by DayPilot with intuitive navigation and event management</p>
                         </div>
                         <div class="feature">
                             <h4>📍 Location Information</h4>
@@ -83,7 +675,11 @@
                         </div>
                         <div class="feature">
                             <h4>💻 Virtual & In-Person</h4>
-                            <p>Access both virtual and in-person meeting options</p>
+                            <p>Access both virtual and in-person meeting options with clear visual indicators</p>
+                        </div>
+                        <div class="feature">
+                            <h4>🎨 Color-Coded Events</h4>
+                            <p>Easily identify different types of meetings with our color-coded system</p>
                         </div>
                     </div>
                 </div>
@@ -98,6 +694,7 @@
         </div>
     </footer>
 
-    <script src="calendar.js"></script>
+    <!-- Custom Calendar JavaScript -->
+    <script src="custom-calendar.js"></script>
 </body>
 </html>
