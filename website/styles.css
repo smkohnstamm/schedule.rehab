@@ -145,7 +145,16 @@ body {
     border-radius: 12px;
     padding: 2rem;
     border: 1px solid #e2e8f0;
-    margin-top: 2rem;
+    margin-top: 1rem;
+}
+
+/* Fix spacing issues */
+.meeting-info-content {
+    margin-top: 0;
+}
+
+.meeting-info-content > div {
+    margin-top: 0;
 }
 
 .meeting-details h4 {
@@ -224,6 +233,11 @@ body {
 
 .meeting-type.virtual {
     background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+}
+
+.meeting-type.recovery-dharma {
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
     color: white;
 }
 

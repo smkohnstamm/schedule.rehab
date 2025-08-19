@@ -9,8 +9,50 @@ class ScheduleRehabCalendar {
         }
         
         this.calendar = null;
-        this.meetings = this.generateSampleMeetings();
-        this.init();
+        this.meetings = [];
+        this.loadRealMeetingData();
+    }
+
+    async loadRealMeetingData() {
+        try {
+            console.log('Loading Recovery Dharma meetings...');
+            const response = await fetch('meetings-data.json');
+            if (!response.ok) {
+                throw new Error(`Failed to load meetings: ${response.status}`);
+            }
+            
+            const meetingsData = await response.json();
+            console.log(`Loaded ${meetingsData.length} Recovery Dharma meetings`);
+            
+            // Convert to DayPilot format and filter for next 30 days
+            const today = new Date();
+            const thirtyDaysFromNow = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000);
+            
+            this.meetings = meetingsData
+                .filter(meeting => {
+                    const meetingDate = new Date(meeting.start);
+                    return meetingDate >= today && meetingDate <= thirtyDaysFromNow;
+                })
+                .map(meeting => ({
+                    id: meeting.id,
+                    text: meeting.text,
+                    start: new DayPilot.Date(meeting.start),
+                    end: new DayPilot.Date(meeting.end),
+                    tags: {
+                        ...meeting.tags,
+                        type: 'Recovery Dharma'
+                    }
+                }));
+            
+            console.log(`Showing ${this.meetings.length} meetings for the next 30 days`);
+            this.init();
+            
+        } catch (error) {
+            console.error('Error loading meeting data:', error);
+            console.log('Falling back to sample data...');
+            this.meetings = this.generateSampleMeetings();
+            this.init();
+        }
     }
 
     showFallbackCalendar() {
@@ -115,6 +157,8 @@ class ScheduleRehabCalendar {
         // Add CSS classes based on meeting type
         if (event.tags && event.tags.virtual) {
             args.data.cssClass = "virtual";
+        } else if (event.tags && event.tags.type === 'Recovery Dharma') {
+            args.data.cssClass = "recovery-dharma";
         } else if (event.tags && event.tags.type === 'AA') {
             args.data.cssClass = "aa";
         } else if (event.tags && event.tags.type === 'NA') {
@@ -123,11 +167,12 @@ class ScheduleRehabCalendar {
         
         // Customize event text
         const startTime = new DayPilot.Date(event.start).toString("h:mm tt");
+        const endTime = new DayPilot.Date(event.end).toString("h:mm tt");
         args.data.html = `
             <div class="event-content">
                 <div class="event-time">${startTime}</div>
                 <div class="event-title">${event.text}</div>
-                <div class="event-location">${event.tags?.location || ''}</div>
+                <div class="event-location">${event.tags?.virtual ? '🌐 Virtual' : '📍 ' + (event.tags?.location || '')}</div>
             </div>
         `;
     }
@@ -160,11 +205,21 @@ class ScheduleRehabCalendar {
                         <strong>Time:</strong> ${startTime} - ${endTime}
                     </div>
                     <div class="detail-item">
-                        <strong>Location:</strong> ${event.tags?.location || 'Location TBD'}
-                    </div>
-                    <div class="detail-item">
                         <strong>Type:</strong> ${event.tags?.type || 'Support Group'} ${event.tags?.virtual ? '(Virtual)' : '(In-Person)'}
                     </div>
+                    <div class="detail-item">
+                        <strong>Location:</strong> ${event.tags?.location || 'Location TBD'}
+                    </div>
+                    ${event.tags?.meetingId ? `
+                        <div class="detail-item">
+                            <strong>Meeting ID:</strong> ${event.tags.meetingId}
+                        </div>
+                    ` : ''}
+                    ${event.tags?.passcode ? `
+                        <div class="detail-item">
+                            <strong>Passcode:</strong> ${event.tags.passcode}
+                        </div>
+                    ` : ''}
                     ${event.tags?.description ? `
                         <div class="detail-item">
                             <strong>Description:</strong> ${event.tags.description}
@@ -172,16 +227,18 @@ class ScheduleRehabCalendar {
                     ` : ''}
                     ${event.tags?.contact ? `
                         <div class="detail-item">
-                            <strong>Contact:</strong> ${event.tags.contact}
+                            <strong>Contact:</strong> <a href="mailto:${event.tags.contact}">${event.tags.contact}</a>
                         </div>
                     ` : ''}
                 </div>
                 <div class="meeting-actions">
                     ${event.tags?.virtual && event.tags?.link ? 
-                        `<a href="${event.tags.link}" target="_blank" class="btn btn-primary">Join Virtual Meeting</a>` : 
-                        `<button onclick="calendar.getDirections('${event.tags?.location}')" class="btn btn-primary">Get Directions</button>`
+                        `<a href="${event.tags.link}" target="_blank" class="btn btn-primary">🌐 Join Virtual Meeting</a>` : 
+                        event.tags?.location && event.tags.location !== 'Virtual Meeting' ?
+                        `<button onclick="calendar.getDirections('${event.tags?.location}')" class="btn btn-primary">📍 Get Directions</button>` :
+                        ''
                     }
-                    <button onclick="calendar.copyMeetingInfo(${JSON.stringify(event).replace(/"/g, '&quot;')})" class="btn btn-secondary">Copy Info</button>
+                    <button onclick="calendar.copyMeetingInfo(${JSON.stringify(event).replace(/"/g, '&quot;')})" class="btn btn-secondary">📋 Copy Info</button>
                 </div>
             </div>
         `;
