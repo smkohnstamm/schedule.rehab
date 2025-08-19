@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule Rehab - Support Group Calendar</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <h1>Schedule.Rehab</h1>
+                <p>Find Support Groups Near You</p>
+            </div>
+            <nav class="nav">
+                <a href="#calendar">Calendar</a>
+                <a href="#about">About</a>
+                <a href="#contact">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+        <section class="hero">
+            <div class="container">
+                <h2>Drug & Alcohol Support Group Calendar</h2>
+                <p>Access publicly available support group meetings in your area. Recovery is a journey best taken together.</p>
+            </div>
+        </section>
+
+        <section id="calendar" class="calendar-section">
+            <div class="container">
+                <h3>Meeting Schedule</h3>
+                <div class="calendar-controls">
+                    <button id="prevMonth" class="btn btn-secondary">← Previous</button>
+                    <h4 id="currentMonth"></h4>
+                    <button id="nextMonth" class="btn btn-secondary">Next →</button>
+                </div>
+                <div id="calendar" class="calendar-grid"></div>
+                
+                <div class="meeting-details" id="meetingDetails">
+                    <h4>Today's Meetings</h4>
+                    <div id="todaysMeetings" class="meetings-list">
+                        <div class="meeting-item">
+                            <div class="meeting-time">7:00 PM</div>
+                            <div class="meeting-info">
+                                <h5>AA Big Book Study</h5>
+                                <p>Community Center - 123 Main St</p>
+                                <span class="meeting-type">In-Person</span>
+                            </div>
+                        </div>
+                        <div class="meeting-item">
+                            <div class="meeting-time">8:00 PM</div>
+                            <div class="meeting-info">
+                                <h5>NA Support Group</h5>
+                                <p>Virtual Meeting - Zoom</p>
+                                <span class="meeting-type virtual">Virtual</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="about-section">
+            <div class="container">
+                <h3>About Schedule.Rehab</h3>
+                <div class="about-content">
+                    <div class="about-text">
+                        <p>Schedule.Rehab provides easy access to publicly available drug and alcohol support group meetings. Our mission is to help individuals in recovery find the support they need, when they need it.</p>
+                        <p>All meetings listed are publicly accessible support groups. We aggregate information from various sources to provide a comprehensive calendar of available meetings.</p>
+                    </div>
+                    <div class="features">
+                        <div class="feature">
+                            <h4>🗓️ Comprehensive Calendar</h4>
+                            <p>View all available meetings in an easy-to-use calendar format</p>
+                        </div>
+                        <div class="feature">
+                            <h4>📍 Location Information</h4>
+                            <p>Find meetings near you with detailed location and contact information</p>
+                        </div>
+                        <div class="feature">
+                            <h4>💻 Virtual & In-Person</h4>
+                            <p>Access both virtual and in-person meeting options</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Schedule.Rehab. Supporting recovery, one meeting at a time.</p>
+            <p class="disclaimer">This site provides information about publicly available support groups. Please verify meeting details before attending.</p>
+        </div>
+    </footer>
+
+    <script src="calendar.js"></script>
+</body>
+</html>
