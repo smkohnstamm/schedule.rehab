@@ -112,6 +112,388 @@
         .legend-color.recovery-dharma { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); }
         .legend-color.virtual { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
         .legend-color.other { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+
+        /* Custom Calendar Styles */
+        .custom-calendar-container {
+            margin: 2rem 0;
+        }
+
+        .app-container {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 20px;
+            min-height: 600px;
+        }
+
+        .left-panel {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            margin-bottom: 30px;
+        }
+
+        .greeting {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: #718096;
+            font-size: 14px;
+        }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px 50px 15px 20px;
+            border: 2px solid #f1f5f9;
+            border-radius: 15px;
+            font-size: 14px;
+            background: #f8fafc;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #a0aec0;
+        }
+
+        .meeting-types {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .type-card {
+            text-align: center;
+            padding: 15px 10px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .type-card.active {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .type-card.recovery-dharma { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); color: white; }
+        .type-card.aa { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; }
+        .type-card.na { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; }
+        .type-card.celebrate-recovery { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white; }
+        .type-card.smart-recovery { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; }
+
+        .type-icon {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .type-name {
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .today-section {
+            flex: 1;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .see-all {
+            color: #667eea;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .meeting-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .meeting-card {
+            padding: 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .meeting-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .meeting-card.recovery-dharma { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); color: white; }
+        .meeting-card.aa { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; }
+        .meeting-card.na { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; }
+        .meeting-card.celebrate-recovery { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white; }
+        .meeting-card.smart-recovery { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; }
+
+        .meeting-time {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .meeting-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .meeting-description {
+            font-size: 13px;
+            opacity: 0.9;
+            line-height: 1.4;
+        }
+
+        .right-panel {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .calendar-nav {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-button {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 10px;
+            background: #f8fafc;
+            color: #4a5568;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .nav-button:hover {
+            background: #e2e8f0;
+        }
+
+        .add-task-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .add-task-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .week-header {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .day-header {
+            text-align: center;
+            padding: 10px;
+            font-size: 12px;
+            color: #a0aec0;
+            font-weight: 500;
+        }
+
+        .day-number {
+            display: block;
+            font-size: 16px;
+            color: #2d3748;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+
+        .day-header.today .day-number {
+            color: #667eea;
+        }
+
+        .calendar-content {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 60px;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .timeline-time {
+            position: absolute;
+            left: -50px;
+            top: 15px;
+            font-size: 12px;
+            color: #718096;
+            font-weight: 500;
+            text-align: right;
+            width: 40px;
+        }
+
+        .timeline-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-left: 4px solid #e2e8f0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .timeline-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .timeline-card.recovery-dharma { border-left-color: #fbbf24; }
+        .timeline-card.aa { border-left-color: #3b82f6; }
+        .timeline-card.na { border-left-color: #10b981; }
+        .timeline-card.celebrate-recovery { border-left-color: #8b5cf6; }
+        .timeline-card.smart-recovery { border-left-color: #ef4444; }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+
+        .card-description {
+            font-size: 14px;
+            color: #718096;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .card-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 12px;
+            color: #a0aec0;
+        }
+
+        .card-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .filter-chips {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-chip {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .filter-chip.active {
+            border-color: #667eea;
+        }
+
+        .filter-chip.all { background: #f8fafc; color: #4a5568; }
+        .filter-chip.recovery-dharma { background: #fef3c7; color: #92400e; }
+        .filter-chip.aa { background: #dbeafe; color: #1e40af; }
+        .filter-chip.na { background: #d1fae5; color: #065f46; }
+        .filter-chip.celebrate-recovery { background: #e9d5ff; color: #6b21a8; }
+        .filter-chip.smart-recovery { background: #fee2e2; color: #991b1b; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .app-container {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .left-panel, .right-panel {
+                padding: 20px;
+            }
+            
+            .meeting-types {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
     </style>
 </head>
 <body>
@@ -139,71 +521,92 @@
 
         <section id="calendar" class="calendar-section">
             <div class="container">
-                <div style="text-align: center; margin-bottom: 2rem;">
-                    <h3 style="margin-bottom: 1rem;">Meeting Schedule</h3>
-                    <p style="color: #718096;">Try our new custom calendar interface:</p>
-                    <a href="custom-calendar.html" style="
-                        display: inline-block;
-                        margin-top: 1rem;
-                        padding: 15px 30px;
-                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                        color: white;
-                        text-decoration: none;
-                        border-radius: 12px;
-                        font-weight: 600;
-                        transition: all 0.3s ease;
-                    " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 25px rgba(102, 126, 234, 0.3)'" onmouseout="this.style.transform=''; this.style.boxShadow=''">
-                        🚀 Launch Custom Calendar
-                    </a>
-                </div>
+                <h3 style="text-align: center; margin-bottom: 2rem;">Meeting Schedule</h3>
                 
-                <div class="calendar-legend">
-                    <div class="legend-item">
-                        <div class="legend-color recovery-dharma"></div>
-                        <span>Recovery Dharma</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color aa"></div>
-                        <span>AA Meetings</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color na"></div>
-                        <span>NA Meetings</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color virtual"></div>
-                        <span>Virtual Meetings</span>
-                    </div>
-                </div>
-                
-                <!-- DayPilot Calendar Container -->
-                <div id="daypilot-calendar"></div>
-                
-                <div class="meeting-details" id="meetingDetails">
-                    <h4>Meeting Information</h4>
-                    <div id="meetingInfo" class="meeting-info-content">
-                        <div style="text-align: center; padding: 2rem;">
-                            <div style="font-size: 2rem; margin-bottom: 1rem;">🤝</div>
-                            <h5 style="color: #2d3748; margin-bottom: 1rem;">Support Group Meetings</h5>
-                            <p style="color: #718096; margin-bottom: 1.5rem;">
-                                We provide information about publicly available AA, NA, and other support group meetings in your area.
-                            </p>
-                            <div style="text-align: left; max-width: 500px; margin: 0 auto;">
-                                <div style="padding: 1rem; margin: 0.5rem 0; background: #f0f9ff; border-radius: 8px; border-left: 4px solid #0ea5e9;">
-                                    <div style="font-weight: 600; color: #2d3748;">AA Meetings</div>
-                                    <div style="color: #718096; font-size: 0.9rem;">Alcoholics Anonymous meetings throughout the week</div>
+                <!-- Custom Calendar Interface -->
+                <div class="custom-calendar-container">
+                    <div class="app-container">
+                        <!-- Left Panel -->
+                        <div class="left-panel">
+                            <div class="header">
+                                <div class="greeting">Good Morning, Recovery Seeker!</div>
+                                <div class="title">You have <span id="meeting-count">12 meetings</span></div>
+                                <div class="subtitle">this week 📅</div>
+                            </div>
+
+                            <div class="search-box">
+                                <input type="text" class="search-input" placeholder="Search meetings..." id="search-input">
+                                <span class="material-icons search-icon">search</span>
+                            </div>
+
+                            <div class="meeting-types">
+                                <div class="type-card recovery-dharma active" data-type="recovery-dharma">
+                                    <div class="type-icon">🧘</div>
+                                    <div class="type-name">Recovery Dharma</div>
                                 </div>
-                                <div style="padding: 1rem; margin: 0.5rem 0; background: #f0fdf4; border-radius: 8px; border-left: 4px solid #10b981;">
-                                    <div style="font-weight: 600; color: #2d3748;">NA Meetings</div>
-                                    <div style="color: #718096; font-size: 0.9rem;">Narcotics Anonymous support groups</div>
+                                <div class="type-card aa" data-type="aa">
+                                    <div class="type-icon">🤝</div>
+                                    <div class="type-name">AA</div>
                                 </div>
-                                <div style="padding: 1rem; margin: 0.5rem 0; background: #fef7ff; border-radius: 8px; border-left: 4px solid #a855f7;">
-                                    <div style="font-weight: 600; color: #2d3748;">Virtual Meetings</div>
-                                    <div style="color: #718096; font-size: 0.9rem;">Online support groups via Zoom, Teams, etc.</div>
+                                <div class="type-card na" data-type="na">
+                                    <div class="type-icon">💪</div>
+                                    <div class="type-name">NA</div>
                                 </div>
-                                <div style="padding: 1rem; margin: 0.5rem 0; background: #f8fafc; border-radius: 8px; border-left: 4px solid #667eea;">
-                                    <div style="font-weight: 600; color: #2d3748;">Other Support Groups</div>
-                                    <div style="color: #718096; font-size: 0.9rem;">SMART Recovery, Celebrate Recovery, and more</div>
+                                <div class="type-card celebrate-recovery" data-type="celebrate-recovery">
+                                    <div class="type-icon">✨</div>
+                                    <div class="type-name">Celebrate Recovery</div>
+                                </div>
+                                <div class="type-card smart-recovery" data-type="smart-recovery">
+                                    <div class="type-icon">🧠</div>
+                                    <div class="type-name">SMART Recovery</div>
+                                </div>
+                            </div>
+
+                            <div class="today-section">
+                                <div class="section-header">
+                                    <div class="section-title">Today's Meetings</div>
+                                    <div class="see-all">See All</div>
+                                </div>
+                                
+                                <div class="meeting-cards" id="today-meetings">
+                                    <!-- Today's meetings will be populated here -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Panel - Calendar -->
+                        <div class="right-panel">
+                            <div class="calendar-header">
+                                <div class="calendar-nav">
+                                    <button class="nav-button" id="prev-week">
+                                        <span class="material-icons">chevron_left</span>
+                                    </button>
+                                    <button class="nav-button" id="next-week">
+                                        <span class="material-icons">chevron_right</span>
+                                    </button>
+                                </div>
+                                <button class="add-task-btn">
+                                    <span class="material-icons">add</span>
+                                    Add Meeting
+                                </button>
+                            </div>
+
+                            <div class="filter-chips">
+                                <div class="filter-chip all active" data-filter="all">All Meetings</div>
+                                <div class="filter-chip recovery-dharma" data-filter="recovery-dharma">Recovery Dharma</div>
+                                <div class="filter-chip aa" data-filter="aa">AA</div>
+                                <div class="filter-chip na" data-filter="na">NA</div>
+                                <div class="filter-chip celebrate-recovery" data-filter="celebrate-recovery">Celebrate Recovery</div>
+                                <div class="filter-chip smart-recovery" data-filter="smart-recovery">SMART Recovery</div>
+                            </div>
+
+                            <div class="week-header" id="week-header">
+                                <!-- Week days will be populated here -->
+                            </div>
+
+                            <div class="calendar-content">
+                                <div class="timeline" id="timeline">
+                                    <!-- Timeline meetings will be populated here -->
                                 </div>
                             </div>
                         </div>
@@ -250,131 +653,7 @@
         </div>
     </footer>
 
-    <!-- DayPilot JavaScript - Local first, then CDN fallbacks -->
-    <script>
-        // Function to load DayPilot - try CDN first for testing, then local fallback
-        function loadDayPilot() {
-            const sources = [
-                { url: 'https://cdn.jsdelivr.net/npm/@daypilot/daypilot-lite-javascript@4.3.0/daypilot-javascript.min.js', type: 'cdn' },
-                { url: 'daypilot.min.js', type: 'local' },
-                { url: 'https://unpkg.com/@daypilot/daypilot-lite-javascript@4.3.0/daypilot-javascript.min.js', type: 'cdn' }
-            ];
-            
-            let currentIndex = 0;
-            
-            function tryLoadScript() {
-                if (currentIndex >= sources.length) {
-                    console.error('All DayPilot sources failed, showing fallback calendar');
-                    showFallbackCalendar();
-                    return;
-                }
-                
-                const source = sources[currentIndex];
-                const script = document.createElement('script');
-                script.src = source.url;
-                script.onload = function() {
-                    console.log('DayPilot loaded successfully from:', source.type, source.url);
-                    // Wait a moment for DayPilot to initialize, then load our calendar
-                    setTimeout(initializeCalendar, 200);
-                };
-                script.onerror = function() {
-                    console.warn('Failed to load DayPilot from:', source.type, source.url);
-                    currentIndex++;
-                    tryLoadScript();
-                };
-                document.head.appendChild(script);
-            }
-            
-            tryLoadScript();
-        }
-        
-        // Fallback calendar implementation
-        function showFallbackCalendar() {
-            const container = document.getElementById('daypilot-calendar');
-            if (container) {
-                container.innerHTML = `
-                    <div style="padding: 2rem; text-align: center; border: 2px solid #e2e8f0; border-radius: 12px; background: white; margin: 2rem 0;">
-                        <div style="font-size: 3rem; margin-bottom: 1rem;">📅</div>
-                        <h4 style="color: #2d3748; margin-bottom: 1rem;">Simple Calendar View</h4>
-                        <p style="color: #718096; margin-bottom: 1.5rem;">
-                            The advanced calendar component couldn't load, but you can still view our meeting schedule.
-                        </p>
-                        <div id="simple-calendar" style="margin-top: 2rem;"></div>
-                    </div>
-                `;
-                
-                // Load a simple calendar fallback
-                loadSimpleCalendar();
-            }
-        }
-        
-        // Simple calendar fallback
-        function loadSimpleCalendar() {
-            const container = document.getElementById('simple-calendar');
-            if (!container) return;
-            
-            const today = new Date();
-            const currentMonth = today.getMonth();
-            const currentYear = today.getFullYear();
-            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
-                'July', 'August', 'September', 'October', 'November', 'December'];
-            
-            // Sample meetings for the next few days
-            const sampleMeetings = [
-                { date: new Date(today.getTime() + 24*60*60*1000), name: 'AA Big Book Study', time: '7:00 PM' },
-                { date: new Date(today.getTime() + 2*24*60*60*1000), name: 'NA Support Group', time: '8:00 PM' },
-                { date: new Date(today.getTime() + 3*24*60*60*1000), name: 'SMART Recovery', time: '6:30 PM' }
-            ];
-            
-            let html = `
-                <h5 style="color: #2d3748; margin-bottom: 1rem;">${monthNames[currentMonth]} ${currentYear}</h5>
-                <div style="text-align: left; max-width: 400px; margin: 0 auto;">
-            `;
-            
-            sampleMeetings.forEach(meeting => {
-                const dateStr = meeting.date.toLocaleDateString('en-US', { 
-                    weekday: 'long', 
-                    month: 'short', 
-                    day: 'numeric' 
-                });
-                html += `
-                    <div style="padding: 1rem; margin: 0.5rem 0; background: #f8fafc; border-radius: 8px; border-left: 4px solid #667eea;">
-                        <div style="font-weight: 600; color: #2d3748;">${meeting.name}</div>
-                        <div style="color: #718096; font-size: 0.9rem;">${dateStr} at ${meeting.time}</div>
-                    </div>
-                `;
-            });
-            
-            html += '</div>';
-            container.innerHTML = html;
-        }
-        
-        // Initialize calendar with DayPilot
-        function initializeCalendar() {
-            if (typeof DayPilot !== 'undefined') {
-                console.log('DayPilot is available, loading calendar script...');
-                const script = document.createElement('script');
-                script.src = 'daypilot-calendar.js';
-                script.onload = function() {
-                    console.log('Calendar script loaded successfully');
-                };
-                script.onerror = function() {
-                    console.error('Failed to load calendar script, showing fallback');
-                    showFallbackCalendar();
-                };
-                document.head.appendChild(script);
-            } else {
-                console.error('DayPilot still not available after loading attempts');
-                showFallbackCalendar();
-            }
-        }
-        
-        // Start loading when DOM is ready
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', loadDayPilot);
-        } else {
-            loadDayPilot();
-        }
-    </script>
+    <!-- Custom Calendar JavaScript -->
+    <script src="custom-calendar.js"></script>
 </body>
 </html>
