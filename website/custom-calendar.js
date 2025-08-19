@@ -4,8 +4,100 @@ class CustomCalendar {
         this.currentDate = new Date();
         this.selectedType = 'recovery-dharma';
         this.selectedFilter = 'all';
-        this.meetings = this.generateMeetingData();
-        this.init();
+        this.meetings = [];
+        this.loadRealDharmaMeetings();
+    }
+
+    async loadRealDharmaMeetings() {
+        try {
+            console.log('Loading real Recovery Dharma meetings...');
+            
+            // Start with sample data for immediate display
+            this.meetings = this.generateSampleData();
+            this.init();
+            
+            // Load real data in background
+            const response = await fetch('dharma-meetings-calendar.json');
+            if (!response.ok) {
+                console.warn(`Failed to load real meetings: ${response.status}, using sample data`);
+                return;
+            }
+            
+            const realMeetings = await response.json();
+            console.log(`Loaded ${realMeetings.length} real Recovery Dharma meetings`);
+            
+            // Convert to our calendar format
+            this.meetings = realMeetings.map(meeting => ({
+                id: meeting.id,
+                title: meeting.title,
+                type: 'recovery-dharma',
+                typeName: 'Recovery Dharma',
+                emoji: '🧘',
+                start: new Date(meeting.start),
+                end: new Date(meeting.end),
+                virtual: meeting.virtual,
+                meetingId: meeting.meetingId,
+                passcode: meeting.passcode,
+                description: meeting.description,
+                location: meeting.location,
+                zoomLink: meeting.zoomLink,
+                contact: meeting.contact
+            }));
+            
+            console.log(`Updated calendar with ${this.meetings.length} real meetings`);
+            
+            // Re-render with real data
+            this.renderTodaysMeetings();
+            this.renderTimeline();
+            this.updateMeetingCount();
+            
+        } catch (error) {
+            console.error('Error loading real dharma meetings:', error);
+            console.log('Falling back to sample data...');
+            this.meetings = this.generateSampleData();
+            this.init();
+        }
+    }
+
+    generateSampleData() {
+        // Generate a few sample meetings for immediate display
+        const today = new Date();
+        const sampleMeetings = [];
+        
+        const samples = [
+            { name: "Recovery Dharma Morning", hours: 9, day: 0 },
+            { name: "Evening Support Group", hours: 19, day: 0 },
+            { name: "Sunday Awakening", hours: 10, day: 1 },
+            { name: "Mindfulness Practice", hours: 18, day: 2 },
+            { name: "Weekly Check-in", hours: 20, day: 3 }
+        ];
+        
+        samples.forEach((sample, index) => {
+            const start = new Date(today);
+            start.setDate(today.getDate() + sample.day);
+            start.setHours(sample.hours, 0, 0, 0);
+            
+            const end = new Date(start);
+            end.setHours(start.getHours() + 1);
+            
+            sampleMeetings.push({
+                id: `sample_${index}`,
+                title: sample.name,
+                type: 'recovery-dharma',
+                typeName: 'Recovery Dharma',
+                emoji: '🧘',
+                start: start,
+                end: end,
+                virtual: true,
+                meetingId: `${123456789 + index}`,
+                passcode: '123456',
+                description: `${sample.name} - Recovery Dharma support group meeting`,
+                location: 'Virtual Meeting',
+                zoomLink: `https://zoom.us/j/${123456789 + index}`
+            });
+        });
+        
+        return sampleMeetings;
     }
 
     init() {
@@ -453,12 +545,20 @@ class CustomCalendar {
                                 <strong>Description:</strong> ${meeting.description}
                             </div>
                         </div>
+                        ${meeting.contact ? `
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span class="material-icons" style="color: #667eea;">email</span>
+                                <div>
+                                    <strong>Contact:</strong> <a href="mailto:${meeting.contact}" style="color: #667eea;">${meeting.contact}</a>
+                                </div>
+                            </div>
+                        ` : ''}
                     </div>
                 </div>
                 
                 <div style="display: flex; gap: 10px; justify-content: center;">
-                    ${meeting.virtual ? `
-                        <button onclick="window.open('https://zoom.us/j/${meeting.meetingId}', '_blank')" style="
+                    ${meeting.virtual && meeting.zoomLink ? `
+                        <button onclick="window.open('${meeting.zoomLink}', '_blank')" style="
                             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
                             color: white;
                             border: none;
@@ -472,6 +572,22 @@ class CustomCalendar {
                         ">
                             <span class="material-icons">videocam</span>
                             Join Meeting
+                        </button>
+                    ` : meeting.virtual ? `
+                        <button onclick="alert('Meeting ID: ${meeting.meetingId}\\nPasscode: ${meeting.passcode || 'N/A'}')" style="
+                            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                            color: white;
+                            border: none;
+                            padding: 12px 24px;
+                            border-radius: 10px;
+                            font-weight: 600;
+                            cursor: pointer;
+                            display: flex;
+                            align-items: center;
+                            gap: 8px;
+                        ">
+                            <span class="material-icons">videocam</span>
+                            Show Meeting Info
                         </button>
                     ` : `
                         <button onclick="window.open('https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(meeting.location)}', '_blank')" style="
