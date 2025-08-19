@@ -129,7 +129,8 @@
             background: white;
             border-radius: 20px;
             padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
             display: flex;
             flex-direction: column;
         }
@@ -200,16 +201,22 @@
             transition: all 0.3s ease;
         }
 
+        .type-card.recovery-dharma { background: #fef3c7; color: #92400e; border: 2px solid #fbbf24; }
+        .type-card.aa { background: #dbeafe; color: #1e40af; border: 2px solid #3b82f6; }
+        .type-card.na { background: #d1fae5; color: #065f46; border: 2px solid #10b981; }
+        .type-card.celebrate-recovery { background: #e9d5ff; color: #6b21a8; border: 2px solid #8b5cf6; }
+        .type-card.smart-recovery { background: #fee2e2; color: #991b1b; border: 2px solid #ef4444; }
+
         .type-card.active {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(0,0,0,0.1);
         }
 
-        .type-card.recovery-dharma { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); color: white; }
-        .type-card.aa { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; }
-        .type-card.na { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; }
-        .type-card.celebrate-recovery { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white; }
-        .type-card.smart-recovery { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; }
+        .type-card.recovery-dharma.active { background: #fbbf24; color: white; }
+        .type-card.aa.active { background: #3b82f6; color: white; }
+        .type-card.na.active { background: #10b981; color: white; }
+        .type-card.celebrate-recovery.active { background: #8b5cf6; color: white; }
+        .type-card.smart-recovery.active { background: #ef4444; color: white; }
 
         .type-icon {
             font-size: 18px;
@@ -264,11 +271,11 @@
             box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         }
 
-        .meeting-card.recovery-dharma { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); color: white; }
-        .meeting-card.aa { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; }
-        .meeting-card.na { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; }
-        .meeting-card.celebrate-recovery { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white; }
-        .meeting-card.smart-recovery { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; }
+        .meeting-card.recovery-dharma { background: #fef3c7; color: #92400e; border: 1px solid #fbbf24; }
+        .meeting-card.aa { background: #dbeafe; color: #1e40af; border: 1px solid #3b82f6; }
+        .meeting-card.na { background: #d1fae5; color: #065f46; border: 1px solid #10b981; }
+        .meeting-card.celebrate-recovery { background: #e9d5ff; color: #6b21a8; border: 1px solid #8b5cf6; }
+        .meeting-card.smart-recovery { background: #fee2e2; color: #991b1b; border: 1px solid #ef4444; }
 
         .meeting-time {
             font-size: 12px;
@@ -292,7 +299,8 @@
             background: white;
             border-radius: 20px;
             padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
             display: flex;
             flex-direction: column;
         }
@@ -492,6 +500,25 @@
             
             .meeting-types {
                 grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .filter-chips {
+                gap: 8px;
+            }
+            
+            .filter-chip {
+                font-size: 11px;
+                padding: 6px 12px;
+            }
+            
+            .calendar-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+            
+            .add-task-btn {
+                justify-content: center;
             }
         }
     </style>
