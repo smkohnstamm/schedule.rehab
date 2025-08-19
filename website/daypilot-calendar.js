@@ -16,39 +16,24 @@ class ScheduleRehabCalendar {
     async loadRealMeetingData() {
         try {
             console.log('Loading Recovery Dharma meetings...');
-            const response = await fetch('meetings-data.json');
+            const response = await fetch('meetings-optimized.json');
             if (!response.ok) {
                 throw new Error(`Failed to load meetings: ${response.status}`);
             }
             
             const meetingsData = await response.json();
-            console.log(`Loaded ${meetingsData.length} Recovery Dharma meetings from JSON`);
+            console.log(`Loaded ${meetingsData.length} Recovery Dharma meetings from optimized JSON`);
             
-            // Convert to DayPilot format and filter for next 30 days
-            const today = new Date();
-            const thirtyDaysFromNow = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000);
-            
-            console.log('Date range:', today.toISOString(), 'to', thirtyDaysFromNow.toISOString());
-            
-            const filteredMeetings = meetingsData.filter(meeting => {
-                const meetingDate = new Date(meeting.start);
-                return meetingDate >= today && meetingDate <= thirtyDaysFromNow;
-            });
-            
-            console.log(`Filtered to ${filteredMeetings.length} meetings for the next 30 days`);
-            
-            this.meetings = filteredMeetings.map(meeting => ({
+            // Convert to DayPilot format (data is already filtered for next 30 days)
+            this.meetings = meetingsData.map(meeting => ({
                 id: meeting.id,
                 text: meeting.text,
                 start: new DayPilot.Date(meeting.start),
                 end: new DayPilot.Date(meeting.end),
-                tags: {
-                    ...meeting.tags,
-                    type: 'Recovery Dharma'
-                }
+                tags: meeting.tags
             }));
             
-            console.log(`Final meetings array has ${this.meetings.length} events`);
+            console.log(`Converted ${this.meetings.length} meetings to DayPilot format`);
             console.log('Sample meeting:', this.meetings[0]);
             
             this.init();
