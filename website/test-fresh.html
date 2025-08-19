@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule Rehab - Fresh Test</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗓️</text></svg>">
+    <link rel="stylesheet" href="styles.css?v=1724088000">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <h1>Schedule.Rehab</h1>
+                <p>Find Support Groups Near You</p>
+            </div>
+            <nav class="nav">
+                <a href="#calendar">Calendar</a>
+                <a href="#about">About</a>
+                <a href="#contact">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+        <section class="hero">
+            <div class="container">
+                <h2>Drug & Alcohol Support Group Calendar</h2>
+                <p>Access publicly available support group meetings in your area. Recovery is a journey best taken together.</p>
+            </div>
+        </section>
+
+        <section id="calendar" class="calendar-section">
+            <div class="container">
+                <h3>Meeting Schedule (Fresh Test)</h3>
+                
+                <div id="status" style="padding: 1rem; margin: 1rem 0; background: #e6fffa; color: #0d9488; border-radius: 8px; text-align: center;">
+                    Loading calendar...
+                </div>
+                
+                <!-- DayPilot Calendar Container -->
+                <div id="daypilot-calendar"></div>
+                
+                <div class="meeting-details" id="meetingDetails">
+                    <h4>Meeting Information</h4>
+                    <div id="meetingInfo" class="meeting-info-content">
+                        <p style="color: #718096; text-align: center; padding: 2rem;">
+                            Click on a meeting in the calendar above to view details.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Schedule.Rehab. Supporting recovery, one meeting at a time.</p>
+        </div>
+    </footer>
+
+    <!-- Direct CDN loading for testing -->
+    <script src="https://cdn.jsdelivr.net/npm/@daypilot/daypilot-lite-javascript@4.3.0/daypilot-javascript.min.js"></script>
+    <script>
+        function updateStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = message;
+            const colors = {
+                success: { bg: '#d4edda', color: '#155724' },
+                error: { bg: '#f8d7da', color: '#721c24' },
+                info: { bg: '#e6fffa', color: '#0d9488' }
+            };
+            const style = colors[type] || colors.info;
+            statusDiv.style.backgroundColor = style.bg;
+            statusDiv.style.color = style.color;
+            console.log(`[${type.toUpperCase()}] ${message}`);
+        }
+        
+        function initializeFreshCalendar() {
+            try {
+                updateStatus('Initializing calendar with fresh configuration...', 'info');
+                
+                const calendar = new DayPilot.Month("daypilot-calendar", {
+                    viewType: "Month",
+                    locale: "en-us",
+                    startDate: new DayPilot.Date().firstDayOfMonth(),
+                    showWeekend: true,
+                    weekStarts: 0,
+                    theme: "month_default",
+                    headerHeight: 30,
+                    cellHeight: 120,
+                    eventHeight: 25,
+                    eventClickHandling: "Enabled",
+                    onEventClick: (args) => {
+                        updateStatus(`Clicked: ${args.e.text()}`, 'success');
+                        showEventDetails(args.e.data);
+                    }
+                });
+                
+                // Create immediate test meetings
+                const today = new DayPilot.Date();
+                const testMeetings = [
+                    {
+                        id: 1,
+                        text: "Recovery Dharma Morning",
+                        start: today.addHours(9),
+                        end: today.addHours(10)
+                    },
+                    {
+                        id: 2,
+                        text: "Evening Support Group", 
+                        start: today.addHours(19),
+                        end: today.addHours(20)
+                    },
+                    {
+                        id: 3,
+                        text: "Sunday Awakening",
+                        start: today.addDays(1).addHours(10),
+                        end: today.addDays(1).addHours(11)
+                    }
+                ];
+                
+                calendar.events.list = testMeetings;
+                calendar.init();
+                
+                updateStatus(`✅ Calendar loaded with ${testMeetings.length} test meetings!`, 'success');
+                
+            } catch (error) {
+                updateStatus(`❌ Error: ${error.message}`, 'error');
+                console.error('Calendar error:', error);
+            }
+        }
+        
+        function showEventDetails(event) {
+            const info = document.getElementById('meetingInfo');
+            const startTime = new DayPilot.Date(event.start).toString("h:mm tt");
+            const date = new DayPilot.Date(event.start).toString("dddd, MMMM d, yyyy");
+            
+            info.innerHTML = `
+                <div class="selected-meeting">
+                    <h5>${event.text}</h5>
+                    <p><strong>Date:</strong> ${date}</p>
+                    <p><strong>Time:</strong> ${startTime}</p>
+                    <p><strong>Type:</strong> Recovery Dharma (Virtual)</p>
+                </div>
+            `;
+        }
+        
+        // Wait for DayPilot to load
+        function checkDayPilot() {
+            if (typeof DayPilot !== 'undefined') {
+                updateStatus('✅ DayPilot loaded from CDN', 'success');
+                setTimeout(initializeFreshCalendar, 100);
+            } else {
+                updateStatus('⏳ Waiting for DayPilot...', 'info');
+                setTimeout(checkDayPilot, 500);
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            updateStatus('🚀 Starting fresh calendar test...', 'info');
+            checkDayPilot();
+        });
+    </script>
+</body>
+</html>
