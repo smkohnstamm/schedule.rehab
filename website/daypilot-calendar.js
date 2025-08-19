@@ -151,44 +151,67 @@ class ScheduleRehabCalendar {
     }
 
     initializeCalendar() {
-        // Initialize DayPilot Month calendar
+        // Initialize DayPilot Month calendar with proper configuration
         this.calendar = new DayPilot.Month("daypilot-calendar", {
-            // Calendar configuration
+            // Basic calendar configuration
+            viewType: "Month",
+            locale: "en-us",
             startDate: new DayPilot.Date().firstDayOfMonth(),
             showWeekend: true,
             weekStarts: 0, // Sunday = 0, Monday = 1
             
-            // Event handling
+            // Layout and appearance
+            theme: "month_default",
+            headerHeight: 30,
+            cellHeight: 120,
+            eventHeight: 25,
+            
+            // Event handling configuration
+            eventClickHandling: "Enabled",
+            eventMoveHandling: "Disabled", 
+            eventResizeHandling: "Disabled",
+            eventDeleteHandling: "Disabled",
+            timeRangeSelectedHandling: "Enabled",
+            
+            // Event callbacks
             onEventClick: (args) => this.onEventClick(args),
             onTimeRangeSelected: (args) => this.onDateClick(args),
-            
-            // Appearance
-            theme: "calendar_default",
-            headerHeight: 40,
-            cellHeight: 120,
-            
-            // Navigation
-            navigationButtons: true,
-            
-            // Event rendering
             onBeforeEventRender: (args) => this.onBeforeEventRender(args),
             
-            // Context menu and selection
-            contextMenu: new DayPilot.Menu([
-                {text: "View Details", onClick: (args) => this.showEventDetails(args.source)},
-                {text: "Get Directions", onClick: (args) => this.getDirections(args.source)},
-                {text: "-"},
-                {text: "Copy Meeting Info", onClick: (args) => this.copyMeetingInfo(args.source)}
-            ]),
+            // Context menu for events
+            contextMenu: new DayPilot.Menu({
+                items: [
+                    {text: "📋 View Details", onClick: (args) => this.showEventDetails(args.source.data)},
+                    {text: "🌐 Join Meeting", onClick: (args) => this.joinMeeting(args.source.data)},
+                    {text: "📍 Get Directions", onClick: (args) => this.getDirections(args.source.data.tags?.location)},
+                    {text: "-"},
+                    {text: "📄 Copy Info", onClick: (args) => this.copyMeetingInfo(args.source.data)}
+                ]
+            }),
             
-            // Allow selection of time ranges (dates)
-            timeRangeSelectedHandling: "Enabled"
+            // Visual enhancements
+            bubble: new DayPilot.Bubble({
+                onLoad: (args) => {
+                    const event = args.source.data;
+                    const startTime = new DayPilot.Date(event.start).toString("h:mm tt");
+                    args.html = `
+                        <div style="padding: 10px;">
+                            <strong>${event.text}</strong><br/>
+                            <small>${startTime} - ${event.tags?.type || 'Recovery Dharma'}</small><br/>
+                            <small>📍 ${event.tags?.location || 'Virtual'}</small>
+                        </div>
+                    `;
+                }
+            })
         });
 
+        console.log('Initializing DayPilot Month calendar...');
         this.calendar.init();
+        console.log('Calendar initialized successfully');
         
         // Add navigation buttons
         this.addNavigationButtons();
+        console.log('Navigation buttons added');
     }
 
     addNavigationButtons() {
@@ -356,10 +379,20 @@ class ScheduleRehabCalendar {
         meetingInfo.innerHTML = `<div class="meetings-list">${meetingsHtml}</div>`;
     }
 
+    joinMeeting(eventData) {
+        if (eventData.tags?.link) {
+            window.open(eventData.tags.link, '_blank');
+        } else {
+            alert('No virtual meeting link available for this event.');
+        }
+    }
+
     getDirections(location) {
-        if (location) {
+        if (location && location !== 'Virtual Meeting') {
             const encodedLocation = encodeURIComponent(location);
             window.open(`https://www.google.com/maps/search/?api=1&query=${encodedLocation}`, '_blank');
+        } else {
+            alert('This is a virtual meeting - no physical location.');
         }
     }
     
@@ -387,6 +420,8 @@ ${eventData.tags?.contact ? 'Contact: ' + eventData.tags.contact : ''}
     }
 
     loadEvents() {
+        console.log(`Loading ${this.meetings.length} events into calendar...`);
+        
         // Convert meetings to DayPilot events format
         const events = this.meetings.map(meeting => ({
             id: meeting.id,
@@ -396,8 +431,13 @@ ${eventData.tags?.contact ? 'Contact: ' + eventData.tags.contact : ''}
             tags: meeting.tags
         }));
         
+        console.log('Sample event for debugging:', events[0]);
+        
         this.calendar.events.list = events;
         this.calendar.update();
+        
+        console.log(`Calendar updated with ${events.length} events`);
+        console.log('Calendar object:', this.calendar);
     }
 
     generateSampleMeetings() {
