@@ -47,8 +47,8 @@ class CustomCalendar {
             console.log(`Updated calendar with ${this.meetings.length} real meetings`);
             
             // Re-render with real data
-            this.renderTodaysMeetings();
-            this.renderTimeline();
+            this.renderSelectedDateMeetings();
+            this.renderTimelineForDate(this.currentDate);
             this.updateMeetingCount();
             
         } catch (error) {
@@ -103,8 +103,8 @@ class CustomCalendar {
     init() {
         this.setupEventListeners();
         this.renderWeekHeader();
-        this.renderTodaysMeetings();
-        this.renderTimeline();
+        this.renderSelectedDateMeetings(); // Use selected date instead of today
+        this.renderTimelineForDate(this.currentDate); // Show timeline for selected date
         this.updateMeetingCount();
     }
 
@@ -115,7 +115,7 @@ class CustomCalendar {
                 document.querySelectorAll('.type-card').forEach(c => c.classList.remove('active'));
                 card.classList.add('active');
                 this.selectedType = card.dataset.type;
-                this.renderTodaysMeetings();
+                this.renderSelectedDateMeetings();
                 this.updateMeetingCount();
             });
         });
@@ -126,7 +126,7 @@ class CustomCalendar {
                 document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
                 chip.classList.add('active');
                 this.selectedFilter = chip.dataset.filter;
-                this.renderTimeline();
+                this.renderTimelineForDate(this.currentDate);
             });
         });
 
@@ -134,13 +134,15 @@ class CustomCalendar {
         document.getElementById('prev-week').addEventListener('click', () => {
             this.currentDate.setDate(this.currentDate.getDate() - 7);
             this.renderWeekHeader();
-            this.renderTimeline();
+            this.renderTimelineForDate(this.currentDate);
+            this.renderSelectedDateMeetings();
         });
 
         document.getElementById('next-week').addEventListener('click', () => {
             this.currentDate.setDate(this.currentDate.getDate() + 7);
             this.renderWeekHeader();
-            this.renderTimeline();
+            this.renderTimelineForDate(this.currentDate);
+            this.renderSelectedDateMeetings();
         });
 
         // Search functionality
@@ -333,9 +335,12 @@ class CustomCalendar {
             day.setDate(startOfWeek.getDate() + i);
             
             const isToday = day.toDateString() === today.toDateString();
+            const isSelected = day.toDateString() === this.currentDate.toDateString();
             
             html += `
-                <div class="day-header ${isToday ? 'today' : ''}">
+                <div class="day-header ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''}" 
+                     onclick="calendar.selectDate('${day.toISOString()}')"
+                     style="cursor: pointer;">
                     ${days[i]}
                     <span class="day-number">${day.getDate()}</span>
                 </div>
@@ -343,6 +348,138 @@ class CustomCalendar {
         }
         
         weekHeader.innerHTML = html;
+    }
+
+    selectDate(dateString) {
+        this.currentDate = new Date(dateString);
+        console.log('Selected date:', this.currentDate.toDateString());
+        
+        // Update visual state
+        this.renderWeekHeader();
+        
+        // Update timeline to show meetings for selected date
+        this.renderTimelineForDate(this.currentDate);
+        
+        // Update today's meetings section to show selected date meetings
+        this.renderSelectedDateMeetings();
+    }
+
+    renderSelectedDateMeetings() {
+        const container = document.getElementById('today-meetings');
+        const selectedDate = this.currentDate;
+        
+        const selectedDateMeetings = this.meetings.filter(meeting => {
+            const meetingDate = meeting.start;
+            const sameDay = meetingDate.toDateString() === selectedDate.toDateString();
+            const rightType = this.selectedType === 'all' || meeting.type === this.selectedType;
+            return sameDay && rightType;
+        }).slice(0, 3); // Show only first 3 meetings
+        
+        const dateStr = selectedDate.toLocaleDateString('en-US', { 
+            weekday: 'long', 
+            month: 'short', 
+            day: 'numeric' 
+        });
+        
+        // Update section title
+        const sectionTitle = document.querySelector('.section-title');
+        if (sectionTitle) {
+            const isToday = selectedDate.toDateString() === new Date().toDateString();
+            sectionTitle.textContent = isToday ? "Today's Meetings" : `${dateStr} Meetings`;
+        }
+        
+        if (selectedDateMeetings.length === 0) {
+            container.innerHTML = `
+                <div style="text-align: center; padding: 20px; color: #a0aec0;">
+                    <span class="material-icons" style="font-size: 48px; margin-bottom: 10px;">event_available</span>
+                    <p>No meetings on ${dateStr}</p>
+                    <p style="font-size: 12px;">for ${this.getTypeName(this.selectedType)}</p>
+                </div>
+            `;
+            return;
+        }
+
+        const html = selectedDateMeetings.map(meeting => {
+            const time = meeting.start.toLocaleTimeString('en-US', { 
+                hour: 'numeric', 
+                minute: '2-digit',
+                hour12: true 
+            });
+            
+            return `
+                <div class="meeting-card ${meeting.type}" onclick="calendar.showMeetingDetails('${meeting.id}')">
+                    <div class="meeting-time">${time}</div>
+                    <div class="meeting-title">${meeting.title}</div>
+                    <div class="meeting-description">${meeting.description}</div>
+                </div>
+            `;
+        }).join('');
+        
+        container.innerHTML = html;
+    }
+
+    renderTimelineForDate(selectedDate) {
+        const timeline = document.getElementById('timeline');
+        
+        const dateMeetings = this.meetings.filter(meeting => {
+            const meetingDate = meeting.start;
+            const sameDay = meetingDate.toDateString() === selectedDate.toDateString();
+            const rightType = this.selectedFilter === 'all' || meeting.type === this.selectedFilter;
+            return sameDay && rightType;
+        });
+
+        if (dateMeetings.length === 0) {
+            const dateStr = selectedDate.toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            
+            timeline.innerHTML = `
+                <div style="text-align: center; padding: 40px; color: #a0aec0;">
+                    <span class="material-icons" style="font-size: 64px; margin-bottom: 20px;">event_note</span>
+                    <h3 style="margin-bottom: 10px;">No meetings on ${dateStr}</h3>
+                    <p>Try selecting a different date or meeting type</p>
+                </div>
+            `;
+            return;
+        }
+
+        const html = dateMeetings.map((meeting, index) => {
+            const time = meeting.start.toLocaleTimeString('en-US', { 
+                hour: 'numeric', 
+                minute: '2-digit',
+                hour12: true 
+            });
+            
+            return `
+                <div class="timeline-item" onclick="calendar.showMeetingDetails('${meeting.id}')">
+                    <div class="timeline-time">${time}</div>
+                    <div class="timeline-card ${meeting.type}">
+                        <div class="card-title">${meeting.title}</div>
+                        <div class="card-description">${meeting.description}</div>
+                        <div class="card-meta">
+                            <div class="card-meta-item">
+                                <span class="material-icons" style="font-size: 14px;">${meeting.virtual ? 'videocam' : 'place'}</span>
+                                ${meeting.virtual ? 'Virtual' : 'In-Person'}
+                            </div>
+                            <div class="card-meta-item">
+                                <span class="material-icons" style="font-size: 14px;">group</span>
+                                ${meeting.typeName}
+                            </div>
+                            ${meeting.virtual && meeting.meetingId ? `
+                                <div class="card-meta-item">
+                                    <span class="material-icons" style="font-size: 14px;">key</span>
+                                    ID: ${meeting.meetingId}
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+        
+        timeline.innerHTML = html;
     }
 
     renderTodaysMeetings() {
