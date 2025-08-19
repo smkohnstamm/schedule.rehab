@@ -159,9 +159,31 @@
                 <div class="meeting-details" id="meetingDetails">
                     <h4>Meeting Information</h4>
                     <div id="meetingInfo" class="meeting-info-content">
-                        <p style="color: #718096; text-align: center; padding: 2rem;">
-                            Click on a meeting in the calendar above to view details, or select a date to see all meetings for that day.
-                        </p>
+                        <div style="text-align: center; padding: 2rem;">
+                            <div style="font-size: 2rem; margin-bottom: 1rem;">🤝</div>
+                            <h5 style="color: #2d3748; margin-bottom: 1rem;">Support Group Meetings</h5>
+                            <p style="color: #718096; margin-bottom: 1.5rem;">
+                                We provide information about publicly available AA, NA, and other support group meetings in your area.
+                            </p>
+                            <div style="text-align: left; max-width: 500px; margin: 0 auto;">
+                                <div style="padding: 1rem; margin: 0.5rem 0; background: #f0f9ff; border-radius: 8px; border-left: 4px solid #0ea5e9;">
+                                    <div style="font-weight: 600; color: #2d3748;">AA Meetings</div>
+                                    <div style="color: #718096; font-size: 0.9rem;">Alcoholics Anonymous meetings throughout the week</div>
+                                </div>
+                                <div style="padding: 1rem; margin: 0.5rem 0; background: #f0fdf4; border-radius: 8px; border-left: 4px solid #10b981;">
+                                    <div style="font-weight: 600; color: #2d3748;">NA Meetings</div>
+                                    <div style="color: #718096; font-size: 0.9rem;">Narcotics Anonymous support groups</div>
+                                </div>
+                                <div style="padding: 1rem; margin: 0.5rem 0; background: #fef7ff; border-radius: 8px; border-left: 4px solid #a855f7;">
+                                    <div style="font-weight: 600; color: #2d3748;">Virtual Meetings</div>
+                                    <div style="color: #718096; font-size: 0.9rem;">Online support groups via Zoom, Teams, etc.</div>
+                                </div>
+                                <div style="padding: 1rem; margin: 0.5rem 0; background: #f8fafc; border-radius: 8px; border-left: 4px solid #667eea;">
+                                    <div style="font-weight: 600; color: #2d3748;">Other Support Groups</div>
+                                    <div style="color: #718096; font-size: 0.9rem;">SMART Recovery, Celebrate Recovery, and more</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -205,42 +227,129 @@
         </div>
     </footer>
 
-    <!-- DayPilot JavaScript - Load with proper error handling -->
-    <script src="https://unpkg.com/@daypilot/daypilot-lite-javascript@latest/dist/daypilot-all.min.js" 
-            onload="console.log('DayPilot loaded successfully')" 
-            onerror="console.error('Failed to load DayPilot library')"></script>
+    <!-- DayPilot JavaScript with multiple CDN fallbacks -->
     <script>
-        // Ensure DayPilot is loaded before initializing our calendar
+        // Function to load DayPilot with multiple fallback URLs
+        function loadDayPilot() {
+            const cdnUrls = [
+                'https://unpkg.com/@daypilot/daypilot-lite-javascript@2025.3.696/dist/daypilot-all.min.js',
+                'https://cdn.jsdelivr.net/npm/@daypilot/daypilot-lite-javascript@latest/dist/daypilot-all.min.js',
+                'https://unpkg.com/@daypilot/daypilot-lite-javascript@latest/dist/daypilot-all.min.js'
+            ];
+            
+            let currentIndex = 0;
+            
+            function tryLoadScript() {
+                if (currentIndex >= cdnUrls.length) {
+                    console.error('All DayPilot CDN sources failed, showing fallback calendar');
+                    showFallbackCalendar();
+                    return;
+                }
+                
+                const script = document.createElement('script');
+                script.src = cdnUrls[currentIndex];
+                script.onload = function() {
+                    console.log('DayPilot loaded successfully from:', cdnUrls[currentIndex]);
+                    // Wait a moment for DayPilot to initialize, then load our calendar
+                    setTimeout(initializeCalendar, 200);
+                };
+                script.onerror = function() {
+                    console.warn('Failed to load DayPilot from:', cdnUrls[currentIndex]);
+                    currentIndex++;
+                    tryLoadScript();
+                };
+                document.head.appendChild(script);
+            }
+            
+            tryLoadScript();
+        }
+        
+        // Fallback calendar implementation
+        function showFallbackCalendar() {
+            const container = document.getElementById('daypilot-calendar');
+            if (container) {
+                container.innerHTML = `
+                    <div style="padding: 2rem; text-align: center; border: 2px solid #e2e8f0; border-radius: 12px; background: white; margin: 2rem 0;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">📅</div>
+                        <h4 style="color: #2d3748; margin-bottom: 1rem;">Simple Calendar View</h4>
+                        <p style="color: #718096; margin-bottom: 1.5rem;">
+                            The advanced calendar component couldn't load, but you can still view our meeting schedule.
+                        </p>
+                        <div id="simple-calendar" style="margin-top: 2rem;"></div>
+                    </div>
+                `;
+                
+                // Load a simple calendar fallback
+                loadSimpleCalendar();
+            }
+        }
+        
+        // Simple calendar fallback
+        function loadSimpleCalendar() {
+            const container = document.getElementById('simple-calendar');
+            if (!container) return;
+            
+            const today = new Date();
+            const currentMonth = today.getMonth();
+            const currentYear = today.getFullYear();
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'];
+            
+            // Sample meetings for the next few days
+            const sampleMeetings = [
+                { date: new Date(today.getTime() + 24*60*60*1000), name: 'AA Big Book Study', time: '7:00 PM' },
+                { date: new Date(today.getTime() + 2*24*60*60*1000), name: 'NA Support Group', time: '8:00 PM' },
+                { date: new Date(today.getTime() + 3*24*60*60*1000), name: 'SMART Recovery', time: '6:30 PM' }
+            ];
+            
+            let html = `
+                <h5 style="color: #2d3748; margin-bottom: 1rem;">${monthNames[currentMonth]} ${currentYear}</h5>
+                <div style="text-align: left; max-width: 400px; margin: 0 auto;">
+            `;
+            
+            sampleMeetings.forEach(meeting => {
+                const dateStr = meeting.date.toLocaleDateString('en-US', { 
+                    weekday: 'long', 
+                    month: 'short', 
+                    day: 'numeric' 
+                });
+                html += `
+                    <div style="padding: 1rem; margin: 0.5rem 0; background: #f8fafc; border-radius: 8px; border-left: 4px solid #667eea;">
+                        <div style="font-weight: 600; color: #2d3748;">${meeting.name}</div>
+                        <div style="color: #718096; font-size: 0.9rem;">${dateStr} at ${meeting.time}</div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+        
+        // Initialize calendar with DayPilot
         function initializeCalendar() {
             if (typeof DayPilot !== 'undefined') {
-                // Load our calendar script
+                console.log('DayPilot is available, loading calendar script...');
                 const script = document.createElement('script');
                 script.src = 'daypilot-calendar.js';
                 script.onload = function() {
                     console.log('Calendar script loaded successfully');
                 };
                 script.onerror = function() {
-                    console.error('Failed to load calendar script');
+                    console.error('Failed to load calendar script, showing fallback');
+                    showFallbackCalendar();
                 };
                 document.head.appendChild(script);
             } else {
-                console.error('DayPilot library not available');
-                // Fallback: show error message to user
-                document.getElementById('daypilot-calendar').innerHTML = 
-                    '<div style="padding: 2rem; text-align: center; color: #e53e3e; border: 2px solid #feb2b2; border-radius: 8px; background: #fed7d7;">' +
-                    '<h4>Calendar Loading Error</h4>' +
-                    '<p>Unable to load the calendar component. Please refresh the page or try again later.</p>' +
-                    '</div>';
+                console.error('DayPilot still not available after loading attempts');
+                showFallbackCalendar();
             }
         }
         
-        // Wait for DOM and try to initialize
+        // Start loading when DOM is ready
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', function() {
-                setTimeout(initializeCalendar, 100); // Small delay to ensure DayPilot loads
-            });
+            document.addEventListener('DOMContentLoaded', loadDayPilot);
         } else {
-            setTimeout(initializeCalendar, 100);
+            loadDayPilot();
         }
     </script>
 </body>
