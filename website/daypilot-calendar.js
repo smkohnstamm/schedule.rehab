@@ -1,9 +1,33 @@
 // DayPilot Calendar for Schedule.Rehab
 class ScheduleRehabCalendar {
     constructor() {
+        // Check if DayPilot is available
+        if (typeof DayPilot === 'undefined') {
+            console.error('DayPilot library is not loaded');
+            this.showFallbackCalendar();
+            return;
+        }
+        
         this.calendar = null;
         this.meetings = this.generateSampleMeetings();
         this.init();
+    }
+
+    showFallbackCalendar() {
+        const container = document.getElementById('daypilot-calendar');
+        if (container) {
+            container.innerHTML = `
+                <div style="padding: 2rem; text-align: center; border: 2px solid #e2e8f0; border-radius: 12px; background: white;">
+                    <h4 style="color: #2d3748; margin-bottom: 1rem;">📅 Calendar Loading...</h4>
+                    <p style="color: #718096; margin-bottom: 1.5rem;">
+                        The professional calendar component is loading. If this persists, please refresh the page.
+                    </p>
+                    <button onclick="location.reload()" style="padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; cursor: pointer;">
+                        Refresh Page
+                    </button>
+                </div>
+            `;
+        }
     }
 
     init() {

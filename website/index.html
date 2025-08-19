@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Schedule Rehab - Support Group Calendar</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗓️</text></svg>">
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- DayPilot CSS -->
@@ -204,8 +205,43 @@
         </div>
     </footer>
 
-    <!-- DayPilot JavaScript -->
-    <script src="https://unpkg.com/@daypilot/daypilot-lite-javascript@latest/dist/daypilot-all.min.js"></script>
-    <script src="daypilot-calendar.js"></script>
+    <!-- DayPilot JavaScript - Load with proper error handling -->
+    <script src="https://unpkg.com/@daypilot/daypilot-lite-javascript@latest/dist/daypilot-all.min.js" 
+            onload="console.log('DayPilot loaded successfully')" 
+            onerror="console.error('Failed to load DayPilot library')"></script>
+    <script>
+        // Ensure DayPilot is loaded before initializing our calendar
+        function initializeCalendar() {
+            if (typeof DayPilot !== 'undefined') {
+                // Load our calendar script
+                const script = document.createElement('script');
+                script.src = 'daypilot-calendar.js';
+                script.onload = function() {
+                    console.log('Calendar script loaded successfully');
+                };
+                script.onerror = function() {
+                    console.error('Failed to load calendar script');
+                };
+                document.head.appendChild(script);
+            } else {
+                console.error('DayPilot library not available');
+                // Fallback: show error message to user
+                document.getElementById('daypilot-calendar').innerHTML = 
+                    '<div style="padding: 2rem; text-align: center; color: #e53e3e; border: 2px solid #feb2b2; border-radius: 8px; background: #fed7d7;">' +
+                    '<h4>Calendar Loading Error</h4>' +
+                    '<p>Unable to load the calendar component. Please refresh the page or try again later.</p>' +
+                    '</div>';
+            }
+        }
+        
+        // Wait for DOM and try to initialize
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                setTimeout(initializeCalendar, 100); // Small delay to ensure DayPilot loads
+            });
+        } else {
+            setTimeout(initializeCalendar, 100);
+        }
+    </script>
 </body>
 </html>
