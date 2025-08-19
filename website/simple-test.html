@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Calendar Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        #calendar { margin: 20px 0; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+    </style>
+</head>
+<body>
+    <h1>DayPilot Calendar Test</h1>
+    
+    <div id="status" class="status info">Loading DayPilot...</div>
+    
+    <div id="calendar"></div>
+    
+    <div id="meeting-info">
+        <h3>Test Meeting Details</h3>
+        <p>Click on a meeting in the calendar to see details here.</p>
+    </div>
+
+    <!-- Load DayPilot from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@daypilot/daypilot-lite-javascript@4.3.0/daypilot-javascript.min.js"></script>
+    
+    <script>
+        function updateStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = message;
+            statusDiv.className = `status ${type}`;
+            console.log(`[${type.toUpperCase()}] ${message}`);
+        }
+        
+        function showMeetingDetails(event) {
+            const info = document.getElementById('meeting-info');
+            const startTime = new DayPilot.Date(event.start).toString("h:mm tt");
+            const endTime = new DayPilot.Date(event.end).toString("h:mm tt");
+            const date = new DayPilot.Date(event.start).toString("dddd, MMMM d, yyyy");
+            
+            info.innerHTML = `
+                <h3>Meeting Details</h3>
+                <p><strong>Meeting:</strong> ${event.text}</p>
+                <p><strong>Date:</strong> ${date}</p>
+                <p><strong>Time:</strong> ${startTime} - ${endTime}</p>
+                <p><strong>Type:</strong> ${event.tags?.type || 'Support Group'}</p>
+                <p><strong>Location:</strong> ${event.tags?.location || 'Virtual'}</p>
+                ${event.tags?.meetingId ? `<p><strong>Meeting ID:</strong> ${event.tags.meetingId}</p>` : ''}
+                ${event.tags?.link ? `<p><strong>Zoom Link:</strong> <a href="${event.tags.link}" target="_blank">Join Meeting</a></p>` : ''}
+            `;
+        }
+        
+        function initializeTestCalendar() {
+            try {
+                updateStatus('Initializing calendar...', 'info');
+                
+                const calendar = new DayPilot.Month("calendar", {
+                    startDate: new DayPilot.Date().firstDayOfMonth(),
+                    theme: "calendar_default",
+                    onEventClick: (args) => {
+                        updateStatus(`Clicked: ${args.e.text()}`, 'success');
+                        showMeetingDetails(args.e.data);
+                    }
+                });
+                
+                // Create just 5 test meetings for today and next few days
+                const today = new DayPilot.Date();
+                const testMeetings = [
+                    {
+                        id: 1,
+                        text: "Recovery Dharma Morning",
+                        start: today.addHours(9),
+                        end: today.addHours(10),
+                        tags: {
+                            type: "Recovery Dharma",
+                            location: "Virtual Meeting",
+                            meetingId: "123456789",
+                            link: "https://zoom.us/j/123456789"
+                        }
+                    },
+                    {
+                        id: 2,
+                        text: "Evening Support Group",
+                        start: today.addHours(19),
+                        end: today.addHours(20.5),
+                        tags: {
+                            type: "Recovery Dharma",
+                            location: "Virtual Meeting",
+                            meetingId: "987654321",
+                            link: "https://zoom.us/j/987654321"
+                        }
+                    },
+                    {
+                        id: 3,
+                        text: "Sunday Awakening",
+                        start: today.addDays(1).addHours(10),
+                        end: today.addDays(1).addHours(11),
+                        tags: {
+                            type: "Recovery Dharma",
+                            location: "Virtual Meeting",
+                            meetingId: "555666777",
+                            link: "https://zoom.us/j/555666777"
+                        }
+                    },
+                    {
+                        id: 4,
+                        text: "Mindfulness Practice",
+                        start: today.addDays(2).addHours(18),
+                        end: today.addDays(2).addHours(19),
+                        tags: {
+                            type: "Recovery Dharma",
+                            location: "Virtual Meeting",
+                            meetingId: "111222333",
+                            link: "https://zoom.us/j/111222333"
+                        }
+                    },
+                    {
+                        id: 5,
+                        text: "Weekly Check-in",
+                        start: today.addDays(3).addHours(20),
+                        end: today.addDays(3).addHours(21),
+                        tags: {
+                            type: "Recovery Dharma",
+                            location: "Virtual Meeting",
+                            meetingId: "444555666",
+                            link: "https://zoom.us/j/444555666"
+                        }
+                    }
+                ];
+                
+                calendar.events.list = testMeetings;
+                calendar.init();
+                
+                updateStatus(`Calendar loaded successfully with ${testMeetings.length} test meetings!`, 'success');
+                
+            } catch (error) {
+                updateStatus(`Error initializing calendar: ${error.message}`, 'error');
+                console.error('Calendar error:', error);
+            }
+        }
+        
+        // Wait for DayPilot to load
+        function checkDayPilot() {
+            if (typeof DayPilot !== 'undefined') {
+                updateStatus('DayPilot loaded successfully from CDN', 'success');
+                initializeTestCalendar();
+            } else {
+                updateStatus('DayPilot not yet available, retrying...', 'info');
+                setTimeout(checkDayPilot, 500);
+            }
+        }
+        
+        // Start checking when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            updateStatus('DOM loaded, checking for DayPilot...', 'info');
+            checkDayPilot();
+        });
+    </script>
+</body>
+</html>

@@ -10,7 +10,89 @@ class ScheduleRehabCalendar {
         
         this.calendar = null;
         this.meetings = [];
-        this.loadRealMeetingData();
+        
+        // Start with simple test data for fast loading
+        console.log('Starting with simple test meetings...');
+        this.meetings = this.generateSimpleTestMeetings();
+        this.init();
+        
+        // Then try to load real data in background
+        this.loadRealMeetingDataInBackground();
+    }
+
+    generateSimpleTestMeetings() {
+        const meetings = [];
+        const today = new DayPilot.Date();
+        
+        // Create just 10 simple test meetings over the next week
+        const testData = [
+            { name: "Recovery Dharma Morning", hours: 9, day: 0 },
+            { name: "Evening Support Group", hours: 19, day: 0 },
+            { name: "Sunday Awakening", hours: 10, day: 1 },
+            { name: "Mindfulness Practice", hours: 18, day: 2 },
+            { name: "Weekly Check-in", hours: 20, day: 3 },
+            { name: "Silent Meditation", hours: 7, day: 4 },
+            { name: "Community Circle", hours: 15, day: 5 },
+            { name: "Newcomer Welcome", hours: 17, day: 6 },
+            { name: "Book Study", hours: 19, day: 1 },
+            { name: "Sharing Circle", hours: 21, day: 2 }
+        ];
+        
+        testData.forEach((meeting, index) => {
+            const start = today.addDays(meeting.day).addHours(meeting.hours);
+            const end = start.addHours(1);
+            
+            meetings.push({
+                id: `test_${index}`,
+                text: meeting.name,
+                start: start,
+                end: end,
+                tags: {
+                    type: 'Recovery Dharma',
+                    virtual: true,
+                    location: 'Virtual Meeting',
+                    meetingId: `${123456789 + index}`,
+                    link: `https://zoom.us/j/${123456789 + index}`,
+                    description: `${meeting.name} - Recovery Dharma support group meeting`
+                }
+            });
+        });
+        
+        console.log(`Generated ${meetings.length} simple test meetings`);
+        return meetings;
+    }
+
+    async loadRealMeetingDataInBackground() {
+        // Wait a bit to let the simple calendar load first
+        setTimeout(async () => {
+            try {
+                console.log('Loading real Recovery Dharma meetings in background...');
+                const response = await fetch('meetings-optimized.json');
+                if (!response.ok) {
+                    console.warn(`Failed to load real meetings: ${response.status}, keeping test data`);
+                    return;
+                }
+                
+                const meetingsData = await response.json();
+                console.log(`Loaded ${meetingsData.length} real meetings, updating calendar...`);
+                
+                // Convert to DayPilot format
+                this.meetings = meetingsData.map(meeting => ({
+                    id: meeting.id,
+                    text: meeting.text,
+                    start: new DayPilot.Date(meeting.start),
+                    end: new DayPilot.Date(meeting.end),
+                    tags: meeting.tags
+                }));
+                
+                // Update the calendar with real data
+                this.loadEvents();
+                console.log(`Calendar updated with ${this.meetings.length} real meetings`);
+                
+            } catch (error) {
+                console.warn('Failed to load real meeting data, keeping test data:', error);
+            }
+        }, 2000); // Wait 2 seconds before loading real data
     }
 
     async loadRealMeetingData() {

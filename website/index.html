@@ -234,11 +234,11 @@
 
     <!-- DayPilot JavaScript - Local first, then CDN fallbacks -->
     <script>
-        // Function to load DayPilot - try local first, then CDN fallbacks
+        // Function to load DayPilot - try CDN first for testing, then local fallback
         function loadDayPilot() {
             const sources = [
-                { url: 'daypilot.min.js', type: 'local' },
                 { url: 'https://cdn.jsdelivr.net/npm/@daypilot/daypilot-lite-javascript@4.3.0/daypilot-javascript.min.js', type: 'cdn' },
+                { url: 'daypilot.min.js', type: 'local' },
                 { url: 'https://unpkg.com/@daypilot/daypilot-lite-javascript@4.3.0/daypilot-javascript.min.js', type: 'cdn' }
             ];
             
