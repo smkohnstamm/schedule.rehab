@@ -303,16 +303,6 @@
             padding-left: 60px;
         }
 
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 30px;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: linear-gradient(to bottom, #e2e8f0, #cbd5e0);
-        }
-
         .timeline-item {
             position: relative;
             margin-bottom: 20px;
@@ -339,11 +329,7 @@
             height: 8px;
             border-radius: 50%;
             background: #cbd5e0;
-        }
-
-        .timeline-dot.active {
-            background: #667eea;
-            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.2);
+            display: none; /* Hide dots since we removed the line */
         }
 
         .timeline-card {
