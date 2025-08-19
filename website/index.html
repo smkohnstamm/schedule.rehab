@@ -232,34 +232,35 @@
         </div>
     </footer>
 
-    <!-- DayPilot JavaScript with multiple CDN fallbacks -->
+    <!-- DayPilot JavaScript - Local first, then CDN fallbacks -->
     <script>
-        // Function to load DayPilot with multiple fallback URLs
+        // Function to load DayPilot - try local first, then CDN fallbacks
         function loadDayPilot() {
-            const cdnUrls = [
-                'https://cdn.jsdelivr.net/npm/@daypilot/daypilot-lite-javascript@4.3.0/daypilot-javascript.min.js',
-                'https://unpkg.com/@daypilot/daypilot-lite-javascript@4.3.0/daypilot-javascript.min.js',
-                'https://cdn.jsdelivr.net/npm/@daypilot/daypilot-lite-javascript@latest/daypilot-javascript.min.js'
+            const sources = [
+                { url: 'daypilot.min.js', type: 'local' },
+                { url: 'https://cdn.jsdelivr.net/npm/@daypilot/daypilot-lite-javascript@4.3.0/daypilot-javascript.min.js', type: 'cdn' },
+                { url: 'https://unpkg.com/@daypilot/daypilot-lite-javascript@4.3.0/daypilot-javascript.min.js', type: 'cdn' }
             ];
             
             let currentIndex = 0;
             
             function tryLoadScript() {
-                if (currentIndex >= cdnUrls.length) {
-                    console.error('All DayPilot CDN sources failed, showing fallback calendar');
+                if (currentIndex >= sources.length) {
+                    console.error('All DayPilot sources failed, showing fallback calendar');
                     showFallbackCalendar();
                     return;
                 }
                 
+                const source = sources[currentIndex];
                 const script = document.createElement('script');
-                script.src = cdnUrls[currentIndex];
+                script.src = source.url;
                 script.onload = function() {
-                    console.log('DayPilot loaded successfully from:', cdnUrls[currentIndex]);
+                    console.log('DayPilot loaded successfully from:', source.type, source.url);
                     // Wait a moment for DayPilot to initialize, then load our calendar
                     setTimeout(initializeCalendar, 200);
                 };
                 script.onerror = function() {
-                    console.warn('Failed to load DayPilot from:', cdnUrls[currentIndex]);
+                    console.warn('Failed to load DayPilot from:', source.type, source.url);
                     currentIndex++;
                     tryLoadScript();
                 };

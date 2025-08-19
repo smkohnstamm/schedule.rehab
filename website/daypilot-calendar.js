@@ -22,29 +22,35 @@ class ScheduleRehabCalendar {
             }
             
             const meetingsData = await response.json();
-            console.log(`Loaded ${meetingsData.length} Recovery Dharma meetings`);
+            console.log(`Loaded ${meetingsData.length} Recovery Dharma meetings from JSON`);
             
             // Convert to DayPilot format and filter for next 30 days
             const today = new Date();
             const thirtyDaysFromNow = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000);
             
-            this.meetings = meetingsData
-                .filter(meeting => {
-                    const meetingDate = new Date(meeting.start);
-                    return meetingDate >= today && meetingDate <= thirtyDaysFromNow;
-                })
-                .map(meeting => ({
-                    id: meeting.id,
-                    text: meeting.text,
-                    start: new DayPilot.Date(meeting.start),
-                    end: new DayPilot.Date(meeting.end),
-                    tags: {
-                        ...meeting.tags,
-                        type: 'Recovery Dharma'
-                    }
-                }));
+            console.log('Date range:', today.toISOString(), 'to', thirtyDaysFromNow.toISOString());
             
-            console.log(`Showing ${this.meetings.length} meetings for the next 30 days`);
+            const filteredMeetings = meetingsData.filter(meeting => {
+                const meetingDate = new Date(meeting.start);
+                return meetingDate >= today && meetingDate <= thirtyDaysFromNow;
+            });
+            
+            console.log(`Filtered to ${filteredMeetings.length} meetings for the next 30 days`);
+            
+            this.meetings = filteredMeetings.map(meeting => ({
+                id: meeting.id,
+                text: meeting.text,
+                start: new DayPilot.Date(meeting.start),
+                end: new DayPilot.Date(meeting.end),
+                tags: {
+                    ...meeting.tags,
+                    type: 'Recovery Dharma'
+                }
+            }));
+            
+            console.log(`Final meetings array has ${this.meetings.length} events`);
+            console.log('Sample meeting:', this.meetings[0]);
+            
             this.init();
             
         } catch (error) {
