@@ -6,6 +6,105 @@
     <title>Schedule Rehab - Support Group Calendar</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- DayPilot CSS -->
+    <style>
+        /* DayPilot Calendar Styling */
+        .daypilot-calendar {
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            overflow: hidden;
+            background: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .daypilot-calendar .calendar_default_main {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .daypilot-calendar .calendar_default_event {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-weight: 500;
+            padding: 4px 8px;
+            margin: 2px;
+        }
+        
+        .daypilot-calendar .calendar_default_event_inner {
+            color: white;
+            font-size: 12px;
+        }
+        
+        .daypilot-calendar .calendar_default_event.virtual {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .daypilot-calendar .calendar_default_event.aa {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        .daypilot-calendar .calendar_default_event.na {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+        
+        .daypilot-calendar .calendar_default_header_cell {
+            background: #f8fafc;
+            color: #4a5568;
+            font-weight: 600;
+            text-align: center;
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .daypilot-calendar .calendar_default_cell {
+            border: 1px solid #f1f5f9;
+            min-height: 120px;
+        }
+        
+        .daypilot-calendar .calendar_default_cell.calendar_default_cell_business {
+            background: #ffffff;
+        }
+        
+        .daypilot-calendar .calendar_default_cell_date {
+            color: #4a5568;
+            font-weight: 600;
+            padding: 8px;
+            font-size: 14px;
+        }
+        
+        .daypilot-calendar .calendar_default_cell.today {
+            background: #f0fff4;
+            border: 2px solid #10b981;
+        }
+        
+        .calendar-legend {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: #4a5568;
+        }
+        
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+        
+        .legend-color.aa { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .legend-color.na { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .legend-color.virtual { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .legend-color.other { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+    </style>
 </head>
 <body>
     <header class="header">
@@ -33,32 +132,35 @@
         <section id="calendar" class="calendar-section">
             <div class="container">
                 <h3>Meeting Schedule</h3>
-                <div class="calendar-controls">
-                    <button id="prevMonth" class="btn btn-secondary">← Previous</button>
-                    <h4 id="currentMonth"></h4>
-                    <button id="nextMonth" class="btn btn-secondary">Next →</button>
+                
+                <div class="calendar-legend">
+                    <div class="legend-item">
+                        <div class="legend-color aa"></div>
+                        <span>AA Meetings</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color na"></div>
+                        <span>NA Meetings</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color virtual"></div>
+                        <span>Virtual Meetings</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color other"></div>
+                        <span>Other Support Groups</span>
+                    </div>
                 </div>
-                <div id="calendar" class="calendar-grid"></div>
+                
+                <!-- DayPilot Calendar Container -->
+                <div id="daypilot-calendar"></div>
                 
                 <div class="meeting-details" id="meetingDetails">
-                    <h4>Today's Meetings</h4>
-                    <div id="todaysMeetings" class="meetings-list">
-                        <div class="meeting-item">
-                            <div class="meeting-time">7:00 PM</div>
-                            <div class="meeting-info">
-                                <h5>AA Big Book Study</h5>
-                                <p>Community Center - 123 Main St</p>
-                                <span class="meeting-type">In-Person</span>
-                            </div>
-                        </div>
-                        <div class="meeting-item">
-                            <div class="meeting-time">8:00 PM</div>
-                            <div class="meeting-info">
-                                <h5>NA Support Group</h5>
-                                <p>Virtual Meeting - Zoom</p>
-                                <span class="meeting-type virtual">Virtual</span>
-                            </div>
-                        </div>
+                    <h4>Meeting Information</h4>
+                    <div id="meetingInfo" class="meeting-info-content">
+                        <p style="color: #718096; text-align: center; padding: 2rem;">
+                            Click on a meeting in the calendar above to view details, or select a date to see all meetings for that day.
+                        </p>
                     </div>
                 </div>
             </div>
@@ -74,8 +176,8 @@
                     </div>
                     <div class="features">
                         <div class="feature">
-                            <h4>🗓️ Comprehensive Calendar</h4>
-                            <p>View all available meetings in an easy-to-use calendar format</p>
+                            <h4>🗓️ Professional Calendar</h4>
+                            <p>Advanced calendar interface powered by DayPilot with intuitive navigation and event management</p>
                         </div>
                         <div class="feature">
                             <h4>📍 Location Information</h4>
@@ -83,7 +185,11 @@
                         </div>
                         <div class="feature">
                             <h4>💻 Virtual & In-Person</h4>
-                            <p>Access both virtual and in-person meeting options</p>
+                            <p>Access both virtual and in-person meeting options with clear visual indicators</p>
+                        </div>
+                        <div class="feature">
+                            <h4>🎨 Color-Coded Events</h4>
+                            <p>Easily identify different types of meetings with our color-coded system</p>
                         </div>
                     </div>
                 </div>
@@ -98,6 +204,8 @@
         </div>
     </footer>
 
-    <script src="calendar.js"></script>
+    <!-- DayPilot JavaScript -->
+    <script src="https://unpkg.com/@daypilot/daypilot-lite-javascript@latest/dist/daypilot-all.min.js"></script>
+    <script src="daypilot-calendar.js"></script>
 </body>
 </html>
