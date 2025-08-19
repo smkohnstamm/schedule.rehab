@@ -2,12 +2,23 @@
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
 import { ScheduleRehabStack } from '../lib/schedule-rehab-stack';
+import { BedrockScraperStack } from '../lib/bedrock-scraper-stack';
 
 const app = new cdk.App();
+
+// Main website stack
 new ScheduleRehabStack(app, 'ScheduleRehabStack', {
   env: {
     // Replace with your AWS account ID and preferred region
     account: process.env.CDK_DEFAULT_ACCOUNT || process.env.AWS_ACCOUNT_ID,
     region: process.env.CDK_DEFAULT_REGION || 'us-east-1', // us-east-1 required for CloudFront
+  },
+});
+
+// Bedrock meeting scraper stack
+new BedrockScraperStack(app, 'BedrockScraperStack', {
+  env: {
+    account: process.env.CDK_DEFAULT_ACCOUNT || process.env.AWS_ACCOUNT_ID,
+    region: process.env.CDK_DEFAULT_REGION || 'us-east-1', // Bedrock available in us-east-1
   },
 });

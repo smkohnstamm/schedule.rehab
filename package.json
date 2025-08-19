@@ -9,7 +9,12 @@
     "test": "jest",
     "cdk": "cdk",
     "deploy": "cdk deploy",
-    "destroy": "cdk destroy"
+    "deploy:website": "cdk deploy ScheduleRehabStack",
+    "deploy:bedrock": "cdk deploy BedrockScraperStack",
+    "deploy:all": "cdk deploy --all",
+    "destroy": "cdk destroy",
+    "scrape:manual": "aws lambda invoke --function-name $(aws cloudformation describe-stacks --stack-name BedrockScraperStack --query 'Stacks[0].Outputs[?OutputKey==`ManualTriggerFunctionName`].OutputValue' --output text) response.json && cat response.json",
+    "process:dharma": "node scripts/process-dharma-json.js"
   },
   "devDependencies": {
     "@types/jest": "^29.4.0",
